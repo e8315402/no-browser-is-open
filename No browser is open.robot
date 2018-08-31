@@ -17,7 +17,6 @@ Go to chrome and search something
     Open Browser    https://www.google.com/    Chrome
     Search    selenium
     Wait Until Page Contains Element    xpath://*[text()='https://www.seleniumhq.org/']
-    Close Browser
 
 Search
     [Arguments]    ${text}
