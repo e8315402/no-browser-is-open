@@ -3,25 +3,31 @@ Library    SeleniumLibrary
 Library    CustomLibrary
 
 *** Test Cases ***
-Re-open browser 100 times
-    :FOR    ${i}    IN RANGE    10
+Re-open browser 500 times
+    :FOR    ${i}    IN RANGE    1
     \    Go to chrome and search something
+    \    Log To Console    ${i}
     \    Async Close Browser
     # \    Close browser
 
 *** Variables ***
-${searchInput}=    id=lst-ib
+${headless} =    ${FALSE}
+${title} =    xpath://h2[text()='What is Selenium?']
 
 *** Keywords ***
 Go to chrome and search something
-    Open Browser    https://www.google.com/    Chrome
-    Search    selenium
-    Wait Until Page Contains Element    xpath://*[text()='https://www.seleniumhq.org/']
-    Close Browser
+    Open Browser (in Headless)    https://www.seleniumhq.org/    Chrome
+    Wait Page Contains "What is Selenium?"
 
-Search
-    [Arguments]    ${text}
-    Wait Until Page Contains Element    ${searchInput}    timeout=5s
-    Wait Until Element Is Visible    ${searchInput}    timeout=1s
-    Input Text    ${searchInput}    ${text}
-    Press Key    ${searchInput}    \\13
+Open Browser (in Headless)
+    [Arguments]    ${url}    ${browser}
+    ${options} =    Set Headless Options
+    ${capabilities}=    Accept Insecure Certs
+    Run Keyword If    ${headless}    Run Keywords
+    ...               Create Webdriver    ${browser}    alias=ctmDriver    chrome_options=${options}    desired_capabilities=${capabilities}
+    ...               AND    Go To    ${url}
+    ...               ELSE    Open Browser    ${url}    ${browser}
+
+Wait Page Contains "What is Selenium?"
+    Wait Until Page Contains Element    ${title}    timeout=10s
+    Wait Until Element Is Visible    ${title}    timeout=2s
