@@ -12,16 +12,22 @@ class CustomLibrary(object):
         t = threading.Thread(target = lambda: BuiltIn().get_library_instance('SeleniumLibrary').close_browser())
         t.start()
 
-    def set_headless_options(self, width=1920, height=1080):
-        chromeOptions = Options()
-        chromeOptions.add_argument("--headless")
-        chromeOptions.add_argument("--window-size=%s,%s" % (width, height))
-        chromeOptions.add_argument("--no-sandbox")
-        chromeOptions.add_argument("--disable-gpu")
-        chromeOptions.add_argument("--ignore-certificate-errors")
-        chromeOptions.add_argument("--allow-running-insecure-content")
-        chromeOptions.add_argument("--log-level=3")
-        return chromeOptions
+    def set_headless_options(self, width=1920, height=1080, options=None):
+        if not options:
+            options = Options()
+        options.add_argument("--headless")
+        options.add_argument("--window-size=%s,%s" % (width, height))
+        options.add_argument("--no-sandbox")
+        options.add_argument("--disable-gpu")
+        options.add_argument("--ignore-certificate-errors")
+        options.add_argument("--allow-running-insecure-content")
+        return options
+    
+    def change_log_level(self, level=3, options=None):
+        if not options:
+            options = Options()
+        options.add_argument("--log-level=3")
+        return options
 
     def accept_insecure_certs(self):
         capabilities = DesiredCapabilities.CHROME.copy()
